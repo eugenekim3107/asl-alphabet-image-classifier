@@ -19,6 +19,7 @@ class ASLDataset(Dataset):
 
     def __getitem__(self, index):
         letter_path = self.annotations.iloc[index, 0]
+        print(letter_path)
         file_dir = os.path.join(self.root_dir, letter_path[0])
         img_path = os.path.join(file_dir, letter_path)
         image = cv2.imread(img_path)
