@@ -10,7 +10,7 @@ numerical_map = {"A":0, "B":1, "C":2, "D":3, "del":4, "E":5, "F":6,
                  "space":21,"T":22,"U":23,"V":24,"W":25,"X":26,"Y":27,"Z":28}
 
 file_path = "./raw_data"
-train_path = "asl_alphabet_train"
+train_path = "asl_alphabet_complete"
 
 def asl_data_csv(num_image):
 
