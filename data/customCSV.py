@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import numpy as np
 
-os.chdir("/Users/eugenekim/PycharmProjects/asl-alphabet-classification/data")
+os.chdir("/Users/eugenekim/PycharmProjects/aslAlphabetClassification/data")
 
 numerical_map = {"A":0, "B":1, "C":2, "D":3, "del":4, "E":5, "F":6,
                 "G":7,"H":8,"I":9,"J":10,"K":11,"L":12,"M":13,"N":14,
@@ -45,5 +45,5 @@ def asl_data_csv(num_image):
 
     return final
 
-data = pd.DataFrame(asl_data_csv(50))
+data = pd.DataFrame(asl_data_csv(50)).set_index(0)
 data.to_csv("aslDataset.csv")
