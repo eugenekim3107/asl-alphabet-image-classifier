@@ -15,7 +15,7 @@ class ASLDataset(Dataset):
                  "space":21,"T":22,"U":23,"V":24,"W":25,"X":26,"Y":27,"Z":28}
         self.chartonum = dict(map(reversed, self.numtochar.items()))
 
-    def __len(self):
+    def __len__(self):
         return len(self.annotations)
 
     def __getitem__(self, index):
