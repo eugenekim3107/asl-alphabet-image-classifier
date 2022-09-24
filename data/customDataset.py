@@ -3,6 +3,7 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 import cv2
+import numpy as np
 
 class ASLDataset(Dataset):
     def __init__(self, csv_file, root_dir, transform=None):
@@ -23,9 +24,7 @@ class ASLDataset(Dataset):
         file_dir = os.path.join(self.root_dir, self.numtochar[letter_path])
         img_path = os.path.join(file_dir, self.annotations.iloc[index, 0])
         image = cv2.imread(img_path)
-        y_label = torch.tensor(int(self.annotations.iloc[index, 1]))
-
+        y_label = torch.tensor(self.annotations.iloc[index, 1], dtype=torch.uint8)
         if self.transform:
             image = self.transform(image)
-
         return image, y_label
