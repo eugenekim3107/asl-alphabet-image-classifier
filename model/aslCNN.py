@@ -14,21 +14,24 @@ class CNN(nn.Module):
 
     def __init__(self):
         super(CNN, self).__init__()
-        self.conv1 = nn.Conv2d(3, 6, (5,5))
+        self.conv1 = nn.Conv2d(3, 30, (20,20))
         self.pool = nn.MaxPool2d(2, 2)
-        self.conv2 = nn.Conv2d(6, 16, (5,5))
-        self.fc1 = nn.Linear(16*47*47, 200)
-        self.fc2 = nn.Linear(200, 120)
-        self.fc3 = nn.Linear(120, 29)
+        self.conv2 = nn.Conv2d(30, 50, (20,20))
+        # make sure to check the size
+        self.fc1 = nn.Linear(50*100*100, 300)
+        self.fc2 = nn.Linear(300, 200)
+        self.fc3 = nn.Linear(200, 100)
+        self.fc4 = nn.Linear(100, 29)
 
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 16*47*47)
+        x = x.view(-1, 50*x.shape[2]*x.shape[3])
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        x = F.relu(self.fc3(x))
+        x = self.fc4(x)
         return x
 
 # Load dataset and set batch size
