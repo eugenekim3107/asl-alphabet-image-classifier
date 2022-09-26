@@ -1,30 +1,70 @@
-import os
 import torch
+import os
 import torch.nn as nn
-import torch.optim as optim
-import torchvision.transforms as transforms
-import torchvision
-from torch.utils.data import DataLoader
 import torch.nn.functional as F
+import torchvision.transforms as transforms
+from torch.utils.data import DataLoader
 
+os.chdir("/Users/eugenekim/PycharmProjects/aslAlphabetClassification")
+
+from data.customDataset import ASLDataset
+
+# CNN Class
 class CNN(nn.Module):
 
-    def __init__(self, num_classes):
+    def __init__(self):
         super(CNN, self).__init__()
-        self.num_classes = num_classes
-
         self.conv1 = nn.Conv2d(3, 6, (5,5))
-        self.pool = nn.MaxPool2d(5,5)
-        self.conv2 = nn.Conv2d(6, 12, (5,5))
-        self.fc1 = nn.Linear(12 * 5 * 5, 200)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(6, 16, (5,5))
+        self.fc1 = nn.Linear(16*47*47, 200)
         self.fc2 = nn.Linear(200, 120)
-        self.fc3 = nn.Linear(120, 10)
+        self.fc3 = nn.Linear(120, 29)
+
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = torch.flatten(x, 1)
+        x = x.view(-1, 16*47*47)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
+
+# Load dataset and set batch size
+dataset = ASLDataset(csv_file = "data/aslDataset.csv",
+                     root_dir = "data/raw_data/asl_alphabet_complete",
+                     transform = transforms.ToTensor())
+
+batch_size = 100
+train_set, test_set = torch.utils.data.random_split(dataset, [1200, 250])
+train_loader = DataLoader(dataset=train_set, batch_size = batch_size, shuffle = True)
+
+# Define Model and Learning Parameters
+cnn = CNN()
+
+learning_rate = 0.001
+num_epochs = 10
+
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(cnn.parameters(), lr=learning_rate)
+
+n_total_steps = len(train_loader)
+
+# Train CNN
+for epoch in range(num_epochs):
+    total_loss = 0
+    for i, (images, labels) in enumerate(train_loader):
+        # Forward Propagation
+        outputs = cnn(images)
+        labels = labels.type(torch.long)
+        loss = criterion(outputs, labels)
+
+        # Backward Propagation
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item()
+    print(f'Epoch {epoch + 1}, Loss: {total_loss}')
+print("Finished Training")
