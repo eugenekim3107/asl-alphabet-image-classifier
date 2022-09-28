@@ -18,21 +18,18 @@ class CNN(nn.Module):
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(30, 50, (20,20))
         # make sure to check the size
-        self.fc1 = nn.Linear(50*100*100, 300)
-        self.fc2 = nn.Linear(300, 200)
-        self.fc3 = nn.Linear(200, 100)
-        self.fc4 = nn.Linear(100, 29)
+        self.fc1 = nn.Linear(50*35*35, 300)
+        self.fc2 = nn.Linear(200, 100)
+        self.fc3 = nn.Linear(100, 29)
 
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        print(x.shape)
-        x = x.view(-1, 50*100*100)
+        x = x.view(-1, 50*35*35)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
-        x = self.fc4(x)
+        x = self.fc3(x)
         return x
 
 # Load dataset and set batch size
