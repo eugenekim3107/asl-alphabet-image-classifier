@@ -27,7 +27,8 @@ class CNN(nn.Module):
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
         x = self.pool(F.relu(self.conv2(x)))
-        x = x.view(-1, 50*x.shape[2]*x.shape[3])
+        print(x.shape)
+        x = x.view(-1, 50*100*100)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
