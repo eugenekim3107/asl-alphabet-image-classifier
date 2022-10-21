@@ -11,6 +11,7 @@ numerical_map = {"A":0, "B":1, "C":2, "D":3, "del":4, "E":5, "F":6,
 
 file_path = "./raw_data"
 train_path = "asl_alphabet_complete"
+label_range = [0,1,2,3,4]#,5,6,7,8,9]
 
 def asl_data_csv(num_image):
 
@@ -25,6 +26,8 @@ def asl_data_csv(num_image):
             continue
 
         map_letter = numerical_map[letter]
+        if map_letter not in label_range:
+            continue
 
         for image in sorted(
                 os.listdir(os.path.join(file_path, train_path, letter))):
@@ -45,5 +48,5 @@ def asl_data_csv(num_image):
 
     return final
 
-data = pd.DataFrame(asl_data_csv(50)).set_index(0)
+data = pd.DataFrame(asl_data_csv(500)).set_index(0)
 data.to_csv("aslDataset.csv")
