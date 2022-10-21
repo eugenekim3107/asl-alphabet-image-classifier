@@ -23,10 +23,9 @@ class ASLDataset(Dataset):
         letter_path = self.annotations.iloc[index, 1]
         file_dir = os.path.join(self.root_dir, self.numtochar[letter_path])
         img_path = os.path.join(file_dir, self.annotations.iloc[index, 0])
-        image = cv2.imread(img_path, 0)
+        image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         image = cv2.resize(image, (28,28))
         y_label = torch.tensor(self.annotations.iloc[index, 1], dtype=torch.uint8)
-        print(y_label)
         if self.transform:
             image = self.transform(image)
         return image, y_label

@@ -18,10 +18,10 @@ class CNN(nn.Module):
         self.conv1 = nn.Conv2d(1, 30, (5, 5))
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(30, 50, (5, 5))
-        self.fc1 = nn.Linear(50 * 4 * 4, 7000)
-        self.fc2 = nn.Linear(7000, 1000)
+        self.fc1 = nn.Linear(50 * 4 * 4, 2000)
+        self.fc2 = nn.Linear(2000, 1000)
         self.fc3 = nn.Linear(1000, 200)
-        self.fc4 = nn.Linear(200, 2)
+        self.fc4 = nn.Linear(200, 5)
 
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -39,14 +39,14 @@ dataset = ASLDataset(csv_file = "data/aslDataset.csv",
                      transform = transforms.ToTensor())
 
 batch_size = 800
-train_set, test_set = torch.utils.data.random_split(dataset, [800, 200])
+train_set, test_set = torch.utils.data.random_split(dataset, [2000, 500])
 train_loader = DataLoader(dataset=train_set, batch_size = batch_size, shuffle = True)
 
 # Define Model and Learning Parameters
 cnn = CNN()
 
-learning_rate = 0.01
-num_epochs = 10
+learning_rate = .01
+num_epochs = 50
 
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(cnn.parameters(), lr=learning_rate)
@@ -68,5 +68,8 @@ for epoch in range(num_epochs):
         optimizer.step()
 
         total_loss += loss.item()
-    print(f'Epoch {epoch + 1}, Loss: {total_loss}')
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch + 1}, Loss: {total_loss}')
 print("Finished Training")
+
+torch.save(cnn.state_dict(), "model/cnn.pth")
