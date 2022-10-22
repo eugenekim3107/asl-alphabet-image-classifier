@@ -3,7 +3,7 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 import cv2
-import numpy as np
+from data.filter import detect_edge
 
 class ASLDataset(Dataset):
     def __init__(self, csv_file, root_dir, transform=None):
@@ -25,6 +25,7 @@ class ASLDataset(Dataset):
         img_path = os.path.join(file_dir, self.annotations.iloc[index, 0])
         image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         image = cv2.resize(image, (28,28))
+        image = detect_edge(image, True)[0]
         y_label = torch.tensor(self.annotations.iloc[index, 1], dtype=torch.uint8)
         if self.transform:
             image = self.transform(image)
